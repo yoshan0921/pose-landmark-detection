@@ -34,7 +34,6 @@ function App() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const poseLandmarkerRef = useRef(null);
-  const webcamRunningRef = useRef(false);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const runningMode = useRef('IMAGE');
   const [landmarkData, setLandmarkData] = useState([]); 
@@ -74,14 +73,12 @@ function App() {
     const canvasElement = canvasRef.current;
     const canvasCtx = canvasElement.getContext('2d');
 
-    // if (webcamRunningRef.current) {
     if (webcamRunning) {
       // Stop webcam
       const stream = videoElement.srcObject;
       const tracks = stream.getTracks();
       tracks.forEach(track => track.stop());
       videoElement.srcObject = null;
-      webcamRunningRef.current = false;
       setWebcamRunning(false); // Update state
       console.log("Webcam disabled");
 
@@ -95,9 +92,7 @@ function App() {
         videoElement.srcObject = stream;
         videoElement.addEventListener('loadeddata', () => {
           console.log("Webcam video loaded:", videoElement.videoWidth, videoElement.videoHeight);
-          webcamRunningRef.current = true;
           setWebcamRunning(true); // Update state
-          // predictWebcam(); // Start prediction
         });
       } catch (error) {
         console.error("Error accessing the webcam: ", error);
@@ -182,7 +177,6 @@ function App() {
     }
   
     // Continue predictions as long as webcam is running
-    // if (webcamRunningRef.current) {
     console.log("Webcam running:", webcamRunning);
     if (webcamRunning) {
       window.requestAnimationFrame(predictWebcam);
@@ -245,7 +239,6 @@ function App() {
           }}
         >
           <Button variant="contained" onClick={enableCam}>
-            {/* {webcamRunningRef.current ? 'DISABLE WEBCAM' : 'ENABLE WEBCAM'} */}
             {webcamRunning ? 'DISABLE WEBCAM' : 'ENABLE WEBCAM'}
           </Button>
         </Box>
